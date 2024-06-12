@@ -25,6 +25,9 @@ To get started with this project, simply pull the repository and import the proj
 
 ## Getting Started
 
+1. Android Studio (Jellyfish or above)
+2. JDK 21 with `JAVA_HOME` environment variable set. If you don't have JDK 21 installed or `JAVA_HOME` is not set, consider using a tool like `sdkman` to simplify the process. Refer to the sdkman documentation for installation instructions: [sdkman installation](https://sdkman.io/install)
+
 * For the most part, the TODOs in the project will guide you through getting the project completed. There is a general package architecture and *most* files are present. 
 * Hints are provided for tricky parts of the application that may extend beyond basic Android development skills.
 * As databinding is integral to the project architecture, it is important to be familiar with the IDE features such s cleaning and rebuilding the project as well as invalidating caches. 
