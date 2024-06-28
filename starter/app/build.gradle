@@ -9,7 +9,7 @@ plugins {
 
 android {
     namespace 'com.example.android.politicalpreparedness'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId 'com.example.android.politicalpreparedness'
@@ -28,11 +28,8 @@ android {
         dataBinding true
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8.toString()
+        sourceCompatibility JavaVersion.VERSION_21
+        targetCompatibility JavaVersion.VERSION_21
     }
 }
 
