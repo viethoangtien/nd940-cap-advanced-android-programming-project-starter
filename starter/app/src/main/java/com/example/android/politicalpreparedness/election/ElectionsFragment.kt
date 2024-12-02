@@ -5,27 +5,61 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import com.example.android.politicalpreparedness.databinding.FragmentElectionBinding
+import com.example.android.politicalpreparedness.election.adapter.ElectionListAdapter
 
-class ElectionsFragment: Fragment() {
+class ElectionsFragment : Fragment() {
+    private var _binding: FragmentElectionBinding? = null
+    private val binding get() = _binding!!
 
-    // TODO: Declare ViewModel
+    private val electionsViewModel: ElectionsViewModel by lazy {
+        ViewModelProvider(
+            this, ElectionsViewModelFactory(application = requireActivity().application)
+        )[ElectionsViewModel::class.java]
+    }
+
+    private lateinit var electionUpcomingListAdapter: ElectionListAdapter
+    private lateinit var electionSavedListAdapter: ElectionListAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?)
-    : View? {
-        // TODO: Add ViewModel values and create ViewModel
-
-        // TODO: Add binding values
-
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentElectionBinding.inflate(inflater)
+        return binding.root
         // TODO: Link elections to voter info
-
-        // TODO: Initiate recycler adapters
-
-        // TODO: Populate recycler adapters
-        return null
     }
 
-    // TODO: Refresh adapters when fragment loads
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.lifecycleOwner = this
+        binding.viewModel = electionsViewModel
+        observerLiveData()
+        initAdapter()
+        electionsViewModel.getUpcomingElections()
+    }
+
+    private fun observerLiveData() {
+        electionsViewModel.electionsLiveData.observe(viewLifecycleOwner) { upcomingElections ->
+            electionUpcomingListAdapter.submitList(upcomingElections)
+        }
+    }
+
+    private fun initAdapter() {
+        electionUpcomingListAdapter = ElectionListAdapter(onItemClickListener = { election ->
+
+        })
+        binding.recyclerUpcomingElections.adapter = electionUpcomingListAdapter
+        electionSavedListAdapter = ElectionListAdapter(onItemClickListener = { election ->
+
+        })
+        binding.recyclerSavedElections.adapter = electionSavedListAdapter
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 }
