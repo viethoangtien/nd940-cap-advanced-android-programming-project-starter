@@ -7,6 +7,8 @@
     <dimen name="_16dp">16dp</dimen>
     <dimen name="_24sp">24sp</dimen>
     <dimen name="_22sp">22sp</dimen>
+    <dimen name="_16sp">16sp</dimen>
+    <dimen name="_4dp">4dp</dimen>
 
 
 </resources>

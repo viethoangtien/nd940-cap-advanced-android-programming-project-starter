@@ -4,4 +4,10 @@
     <string name="find_my_representatives">find my representatives</string>
     <string name="upcoming_elections">Upcoming elections</string>
     <string name="saved_elections">Saved Elections</string>
+    <string name="election_information">Election Infomation</string>
+    <string name="voting_locations">Voting Locations</string>
+    <string name="ballot_information">Ballot Information</string>
+    <string name="follow_election">Follow Election</string>
+    <string name="unfollow_election">Unfollow Election</string>
+    <string name="failed_to_open_link">Failed to open link</string>
 </resources>

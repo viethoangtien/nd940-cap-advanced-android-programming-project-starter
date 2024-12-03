@@ -1,21 +1,88 @@
 package com.example.android.politicalpreparedness.election
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.map
+import androidx.lifecycle.viewModelScope
+import com.example.android.politicalpreparedness.SingleLiveEvent
+import com.example.android.politicalpreparedness.network.models.Election
+import com.example.android.politicalpreparedness.network.models.VoterInfo
 import com.example.android.politicalpreparedness.repository.ElectionRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import timber.log.Timber
 
 class VoterInfoViewModel(private val electionRepository: ElectionRepository) : ViewModel() {
 
-    //TODO: Add live data to hold voter info
+    var election: Election? = null
 
-    //TODO: Add var and methods to populate voter info
+    private val _voterInfo = MutableLiveData<VoterInfo>()
+    val voterInfo: LiveData<VoterInfo>
+        get() = _voterInfo
 
-    //TODO: Add var and methods to support loading URLs
+    private val _allElectionLiveData = electionRepository.getAllElection()
+    val allElectionLiveData: LiveData<List<Election>> = _allElectionLiveData
 
-    //TODO: Add var and methods to save and remove elections to local database
-    //TODO: cont'd -- Populate initial state of save button to reflect proper action based on election saved status
+    private val _isFollowElectionLiveData: MutableLiveData<Boolean> = MutableLiveData()
+    val isFollowElectionLiveData: LiveData<Boolean> = _isFollowElectionLiveData
 
-    /**
-     * Hint: The saved state can be accomplished in multiple ways. It is directly related to how elections are saved/removed from the database.
-     */
+    val votingLocation: SingleLiveEvent<String> = SingleLiveEvent()
+    val ballotInformation: SingleLiveEvent<String> = SingleLiveEvent()
 
+    fun getVoterInformation() {
+        viewModelScope.launch {
+            election?.let { election ->
+                val state = election.division.state.ifEmpty { DEFAULT_STATE }
+                val address = "${state},${election.division.country}"
+                runCatching {
+                    withContext(Dispatchers.IO) {
+                        electionRepository.getVoterInfo(address = address, electionId = election.id)
+                    }.let { voterInfo ->
+                        _voterInfo.value = voterInfo
+                    }
+                }.getOrElse {
+                    Timber.d("getVoterInfo Exception: $it")
+                }
+            }
+        }
+
+    }
+
+    fun showVotingLocation() {
+        _voterInfo.value?.votingLocationUrl?.let {
+            votingLocation.value = it
+        }
+    }
+
+    fun showBallotInformation() {
+        _voterInfo.value?.ballotInformationUrl?.let {
+            ballotInformation.value = it
+        }
+    }
+
+    fun buttonClicked() {
+        viewModelScope.launch {
+            election?.let { election ->
+                val isFollowElection = _isFollowElectionLiveData.value ?: false
+                if (isFollowElection) {
+                    electionRepository.deleteElection(election)
+                } else {
+                    electionRepository.insert(election)
+                }
+            }
+        }
+    }
+
+    fun updateFollowStatus(elections: List<Election>?) {
+        elections?.let {
+            Timber.d("getAllElection: $elections")
+            _isFollowElectionLiveData.value = elections.any { it.id == this.election?.id }
+        }
+    }
+
+    companion object {
+        private const val DEFAULT_STATE = "ga"
+    }
 }

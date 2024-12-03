@@ -42,3 +42,12 @@ fun setElectionsDate(textView: TextView, date: Date?) {
     }
 }
 
+@BindingAdapter("followElectionStatus")
+fun setFollowElectionText(textView: TextView, isFollow: Boolean?) {
+    val context = textView.context
+    isFollow?.let {
+        textView.text =
+            context.getString(if (isFollow) R.string.unfollow_election else R.string.follow_election)
+    }
+}
+

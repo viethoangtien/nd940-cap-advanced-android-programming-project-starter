@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.example.android.politicalpreparedness.databinding.FragmentElectionBinding
 import com.example.android.politicalpreparedness.election.adapter.ElectionListAdapter
 
@@ -44,15 +45,18 @@ class ElectionsFragment : Fragment() {
         electionsViewModel.electionsLiveData.observe(viewLifecycleOwner) { upcomingElections ->
             electionUpcomingListAdapter.submitList(upcomingElections)
         }
+        electionsViewModel.getAllElection().observe(viewLifecycleOwner) { savedElections ->
+            electionSavedListAdapter.submitList(savedElections)
+        }
     }
 
     private fun initAdapter() {
         electionUpcomingListAdapter = ElectionListAdapter(onItemClickListener = { election ->
-
+            findNavController().navigate(ElectionsFragmentDirections.toVoterInfoFragment(election))
         })
         binding.recyclerUpcomingElections.adapter = electionUpcomingListAdapter
         electionSavedListAdapter = ElectionListAdapter(onItemClickListener = { election ->
-
+            findNavController().navigate(ElectionsFragmentDirections.toVoterInfoFragment(election))
         })
         binding.recyclerSavedElections.adapter = electionSavedListAdapter
     }
