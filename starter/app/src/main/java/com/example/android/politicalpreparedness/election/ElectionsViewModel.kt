@@ -5,13 +5,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.android.politicalpreparedness.network.models.Election
-import com.example.android.politicalpreparedness.repository.ElectionRepository
+import com.example.android.politicalpreparedness.repository.PoliticalRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
-class ElectionsViewModel(private val electionRepository: ElectionRepository) : ViewModel() {
+class ElectionsViewModel(private val politicalRepository: PoliticalRepository) : ViewModel() {
 
     private val _electionsLiveData: MutableLiveData<List<Election>> = MutableLiveData()
     val electionsLiveData: LiveData<List<Election>> = _electionsLiveData
@@ -21,16 +21,16 @@ class ElectionsViewModel(private val electionRepository: ElectionRepository) : V
         viewModelScope.launch {
             runCatching {
                 withContext(Dispatchers.IO) {
-                    electionRepository.getUpcomingElections()
+                    politicalRepository.getUpcomingElections()
                 }.let { elections ->
                     _electionsLiveData.value = elections
                 }
             }.getOrElse {
-                Timber.d("getUpcomingElections Exception: $it")
+                Timber.e("getUpcomingElections Exception: $it")
             }
         }
     }
 
-    fun getAllElection() = electionRepository.getAllElection()
+    fun getAllElection() = politicalRepository.getAllElection()
 
 }

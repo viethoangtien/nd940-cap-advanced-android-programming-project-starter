@@ -1,16 +1,16 @@
-package com.example.android.politicalpreparedness.election
+package com.example.android.politicalpreparedness.representative
 
 import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.android.politicalpreparedness.PoliticalApplication
 
-class VoterInfoViewModelFactory(
+class RepresentativeViewModelFactory(
     private val application: Application
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(VoterInfoViewModel::class.java)) {
-            return VoterInfoViewModel((application as PoliticalApplication).politicalRepository) as T
+        if (modelClass.isAssignableFrom(RepresentativeViewModel::class.java)) {
+            return RepresentativeViewModel((application as PoliticalApplication).politicalRepository) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

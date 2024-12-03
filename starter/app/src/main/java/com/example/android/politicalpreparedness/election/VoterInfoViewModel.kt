@@ -3,18 +3,17 @@ package com.example.android.politicalpreparedness.election
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import com.example.android.politicalpreparedness.SingleLiveEvent
 import com.example.android.politicalpreparedness.network.models.Election
 import com.example.android.politicalpreparedness.network.models.VoterInfo
-import com.example.android.politicalpreparedness.repository.ElectionRepository
+import com.example.android.politicalpreparedness.repository.PoliticalRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
-class VoterInfoViewModel(private val electionRepository: ElectionRepository) : ViewModel() {
+class VoterInfoViewModel(private val politicalRepository: PoliticalRepository) : ViewModel() {
 
     var election: Election? = null
 
@@ -22,7 +21,7 @@ class VoterInfoViewModel(private val electionRepository: ElectionRepository) : V
     val voterInfo: LiveData<VoterInfo>
         get() = _voterInfo
 
-    private val _allElectionLiveData = electionRepository.getAllElection()
+    private val _allElectionLiveData = politicalRepository.getAllElection()
     val allElectionLiveData: LiveData<List<Election>> = _allElectionLiveData
 
     private val _isFollowElectionLiveData: MutableLiveData<Boolean> = MutableLiveData()
@@ -38,12 +37,12 @@ class VoterInfoViewModel(private val electionRepository: ElectionRepository) : V
                 val address = "${state},${election.division.country}"
                 runCatching {
                     withContext(Dispatchers.IO) {
-                        electionRepository.getVoterInfo(address = address, electionId = election.id)
+                        politicalRepository.getVoterInfo(address = address, electionId = election.id)
                     }.let { voterInfo ->
                         _voterInfo.value = voterInfo
                     }
                 }.getOrElse {
-                    Timber.d("getVoterInfo Exception: $it")
+                    Timber.e("getVoterInfo Exception: $it")
                 }
             }
         }
@@ -67,9 +66,9 @@ class VoterInfoViewModel(private val electionRepository: ElectionRepository) : V
             election?.let { election ->
                 val isFollowElection = _isFollowElectionLiveData.value ?: false
                 if (isFollowElection) {
-                    electionRepository.deleteElection(election)
+                    politicalRepository.deleteElection(election)
                 } else {
-                    electionRepository.insert(election)
+                    politicalRepository.insert(election)
                 }
             }
         }

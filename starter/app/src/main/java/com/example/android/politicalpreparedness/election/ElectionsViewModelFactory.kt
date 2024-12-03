@@ -10,7 +10,7 @@ class ElectionsViewModelFactory(
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(ElectionsViewModel::class.java)) {
-            return ElectionsViewModel((application as PoliticalApplication).electionRepository) as T
+            return ElectionsViewModel((application as PoliticalApplication).politicalRepository) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

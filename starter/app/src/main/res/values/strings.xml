@@ -10,4 +10,10 @@
     <string name="follow_election">Follow Election</string>
     <string name="unfollow_election">Unfollow Election</string>
     <string name="failed_to_open_link">Failed to open link</string>
+    <string name="representative_search">Representative Search</string>
+    <string name="my_representatives">My Representatives</string>
+    <string name="use_my_location">Use my location</string>
+    <string name="permission_denied_explanation">You need to grant location permission.</string>
+    <string name="location_required_error">Device location must be enabled.</string>
+    <string name="settings">Setting</string>
 </resources>

@@ -1,26 +1,67 @@
 package com.example.android.politicalpreparedness.representative
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.android.politicalpreparedness.network.models.Address
+import com.example.android.politicalpreparedness.repository.PoliticalRepository
+import com.example.android.politicalpreparedness.representative.model.Representative
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import timber.log.Timber
 
-class RepresentativeViewModel: ViewModel() {
+class RepresentativeViewModel(private val politicalRepository: PoliticalRepository) : ViewModel() {
 
-    //TODO: Establish live data for representatives and address
+    private val _address = MutableLiveData<Address>()
+    val address: LiveData<Address>
+        get() = _address
 
-    //TODO: Create function to fetch representatives from API from a provided address
+    private val _states = MutableLiveData<List<String>>()
+    val states: LiveData<List<String>>
+        get() = _states
 
-    /**
-     *  The following code will prove helpful in constructing a representative from the API. This code combines the two nodes of the RepresentativeResponse into a single official :
+    private val _representativesLiveData = MutableLiveData<List<Representative>>()
+    val representativesLiveData: LiveData<List<Representative>>
+        get() = _representativesLiveData
 
-    val (offices, officials) = getRepresentativesDeferred.await()
-    _representatives.value = offices.flatMap { office -> office.getRepresentatives(officials) }
+    private var stateList: List<String> = listOf()
 
-    Note: getRepresentatives in the above code represents the method used to fetch data from the API
-    Note: _representatives in the above code represents the established mutable live data housing representatives
+    var indexSelected = MutableLiveData(0)
 
-     */
+    fun onUseMyLocation(address: Address?) {
+        address?.let {
+            val indexOfState = _states.value?.indexOf(address.state)
+            if (indexOfState != null && indexOfState >= 0) {
+                indexSelected.value = indexOfState
+                _address.value = it
+                getRepresentatives()
+            }
+        }
+    }
 
-    //TODO: Create function get address from geo location
+    private fun getRepresentatives() {
+        viewModelScope.launch {
+            runCatching {
+                withContext(Dispatchers.IO) {
+                    val address = _address.value
+                    return@withContext if (address != null) {
+                        val stateSelected = stateList[indexSelected.value ?: 0]
+                        address.state = stateSelected
+                        politicalRepository.getRepresentatives(address = address.toFormattedString())
+                    } else emptyList()
+                }.let { representatives ->
+                    _representativesLiveData.value = representatives
+                }
+            }.getOrElse {
+                Timber.e("getRepresentatives Exception: $it")
+            }
+        }
+    }
 
-    //TODO: Create function to get address from individual fields
-
+    fun initStates(states: List<String>) {
+        stateList = states
+        _states.value = states
+    }
 }

@@ -6,6 +6,7 @@ import android.widget.Spinner
 import android.widget.TextView
 import androidx.core.net.toUri
 import androidx.databinding.BindingAdapter
+import com.bumptech.glide.Glide
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -48,6 +49,15 @@ fun setFollowElectionText(textView: TextView, isFollow: Boolean?) {
     isFollow?.let {
         textView.text =
             context.getString(if (isFollow) R.string.unfollow_election else R.string.follow_election)
+    }
+}
+
+@BindingAdapter("imageUrl")
+fun loadImage(view: ImageView, url: String?) {
+    val context = view.context
+    url?.let {
+        Glide.with(context).load(url).placeholder(R.drawable.ic_profile)
+            .error(R.drawable.ic_profile).into(view)
     }
 }
 

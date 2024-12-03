@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MotionScene xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ConstraintSet android:id="@+id/start">
+        <Constraint android:id="@id/text_search_title" />
+        <Constraint android:id="@id/edit_address_line_1" />
+        <Constraint android:id="@id/edit_address_line_2" />
+        <Constraint android:id="@id/edit_city" />
+        <Constraint android:id="@id/spinner_state" />
+        <Constraint android:id="@id/edit_zip" />
+        <Constraint android:id="@id/text_find_my_representative" />
+        <Constraint android:id="@id/text_use_location" />
+    </ConstraintSet>
+
+    <ConstraintSet android:id="@+id/end">
+        <Constraint
+            android:id="@id/text_search_title"
+            android:visibility="gone" />
+        <Constraint
+            android:id="@id/edit_address_line_1"
+            android:visibility="gone" />
+        <Constraint
+            android:id="@id/edit_address_line_2"
+            android:visibility="gone" />
+        <Constraint
+            android:id="@id/edit_city"
+            android:visibility="gone" />
+        <Constraint
+            android:id="@id/spinner_state"
+            android:visibility="gone" />
+        <Constraint
+            android:id="@id/edit_zip"
+            android:visibility="gone" />
+        <Constraint
+            android:id="@id/text_find_my_representative"
+            android:visibility="gone" />
+        <Constraint
+            android:id="@id/text_use_location"
+            android:visibility="gone" />
+    </ConstraintSet>
+
+    <Transition
+        app:constraintSetEnd="@id/end"
+        app:constraintSetStart="@id/start">
+        <OnSwipe
+            app:dragDirection="dragUp"
+            app:touchAnchorId="@id/recycler_representatives" />
+    </Transition>
+
+</MotionScene>
