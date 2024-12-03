@@ -29,7 +29,6 @@ class ElectionsFragment : Fragment() {
     ): View {
         _binding = FragmentElectionBinding.inflate(inflater)
         return binding.root
-        // TODO: Link elections to voter info
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
